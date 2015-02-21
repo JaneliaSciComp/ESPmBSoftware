@@ -41,3 +41,22 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+BSW3/.metadata/.bak_0.log
+*.log
+BSW3/.metadata/.plugins/com.xilinx.sdk.hw/dialog_settings.xml
+BSW3/.metadata/**
+*.s
+BSW3/EngineTestBSP/microblaze_0/libsrc/standalone_v3_11_a/src/outbyte.c
+BSW3/EngineTestBSP/microblaze_0/libsrc/standalone_v3_11_a/src/profile/mblaze_nt_types.h
+*.o
+BSW3/EngineTestSoftware/Debug/src/ESP.d
+*.d
+BSW3/EngineTestSoftware/Debug/src/subdir.mk
+*.mk
+BSW3/EngineTestSoftware/src/lscript.ld
+*.cproject
+BSW3/RemoteSystemsTempFiles/.project
+*.sdkproject
+*.project
+*.a
+*.options
