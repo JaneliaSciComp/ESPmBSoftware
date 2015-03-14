@@ -1,5 +1,5 @@
 
-<EDKSYSTEM EDKVERSION="14.7" EDWVERSION="1.2" TIMESTAMP="Fri Feb 27 14:19:42 2015">
+<EDKSYSTEM EDKVERSION="14.7" EDWVERSION="1.2" TIMESTAMP="Thu Mar 12 10:09:11 2015">
 
   <SYSTEMINFO ARCH="spartan3a" DEVICE="xc3s1400an" PACKAGE="fgg676" PART="xc3s1400anfgg676-5" SOURCE="C:/Users/pdw/Documents/GitHub/ESP2_0/MinSysEmbedProc/MinSysEmbedProc.xmp" SPEEDGRADE="-5"/>
 
@@ -81,14 +81,22 @@
         <CONNECTION INSTANCE="data_input_tl_0" PORT="AD7982_DSI_all"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" MHS_INDEX="15" NAME="rtephyseng_plbw_0_eng_reset_pin" SIGNAME="rtephyseng_plbw_0_eng_reset">
+    <PORT DIR="O" MHS_INDEX="15" NAME="data_input_tl_0_Buffer_0_Fill_pin" SIGNAME="data_input_tl_0_Buffer_0_Fill">
       <CONNECTIONS>
-        <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="eng_reset"/>
+        <CONNECTION INSTANCE="data_input_tl_0" PORT="Buffer_0_Fill"/>
       </CONNECTIONS>
     </PORT>
-    <PORT DIR="O" MHS_INDEX="16" NAME="rtephyseng_plbw_0_new_sample_available_pin" SIGNAME="rtephyseng_plbw_0_new_sample_available">
+    <PORT DIR="I" MHS_INDEX="16" NAME="rtephyseng_plbw_0_buffer_0_fill_pin" SIGNAME="net_rtephyseng_plbw_0_buffer_0_fill_pin">
+      <CONNECTIONS/>
+    </PORT>
+    <PORT DIR="O" MHS_INDEX="17" NAME="rtephyseng_plbw_0_new_sample_available_pin" SIGNAME="rtephyseng_plbw_0_new_sample_available">
       <CONNECTIONS>
         <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="new_sample_available"/>
+      </CONNECTIONS>
+    </PORT>
+    <PORT DIR="O" MHS_INDEX="18" NAME="rtephyseng_plbw_0_control16_pin" SIGNAME="rtephyseng_plbw_0_control16">
+      <CONNECTIONS>
+        <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="control16"/>
       </CONNECTIONS>
     </PORT>
   </EXTERNALPORTS>
@@ -6767,29 +6775,29 @@
             <CONNECTION INSTANCE="proc_sys_reset_0" PORT="Peripheral_Reset"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="5" MPD_INDEX="4" MSB="15" NAME="dtoa_data1" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa0_data_regb" VECFORMULA="[15:0]">
+        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="5" MPD_INDEX="3" MSB="15" NAME="dtoa_data0" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa0_data_rega" VECFORMULA="[15:0]">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="dtoa0_data_rega"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="6" MPD_INDEX="4" MSB="15" NAME="dtoa_data1" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa0_data_regb" VECFORMULA="[15:0]">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="dtoa0_data_regb"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="6" MPD_INDEX="5" MSB="15" NAME="dtoa_data2" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa1_data_rega" VECFORMULA="[15:0]">
+        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="7" MPD_INDEX="5" MSB="15" NAME="dtoa_data2" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa1_data_rega" VECFORMULA="[15:0]">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="dtoa1_data_rega"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="7" MPD_INDEX="6" MSB="15" NAME="dtoa_data3" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa1_data_regb" VECFORMULA="[15:0]">
+        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="8" MPD_INDEX="6" MSB="15" NAME="dtoa_data3" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa1_data_regb" VECFORMULA="[15:0]">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="dtoa1_data_regb"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="1" LSB="0" MHS_INDEX="8" MPD_INDEX="2" MSB="1" NAME="dtoa_start" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa_start" VECFORMULA="[1:0]">
+        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="1" LSB="0" MHS_INDEX="9" MPD_INDEX="2" MSB="1" NAME="dtoa_start" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa_start" VECFORMULA="[1:0]">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="dtoa_start"/>
-          </CONNECTIONS>
-        </PORT>
-        <PORT DIR="I" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="9" MPD_INDEX="3" MSB="15" NAME="dtoa_data0" RIGHT="0" SIGNAME="rtephyseng_plbw_0_dtoa0_data_rega" VECFORMULA="[15:0]">
-          <CONNECTIONS>
-            <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="dtoa0_data_rega"/>
           </CONNECTIONS>
         </PORT>
       </PORTS>
@@ -6849,24 +6857,25 @@
             <CONNECTION INSTANCE="External Ports" PORT="data_input_tl_0_AD7982_DSI_all_pin"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="9" LSB="0" MHS_INDEX="10" MPD_INDEX="8" MSB="9" NAME="Port_A_Address" RIGHT="0" SIGNAME="data_input_tl_0_Port_A_Address" VECFORMULA="[9:0]">
+        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="10" MPD_INDEX="10" NAME="Buffer_0_Fill" SIGNAME="data_input_tl_0_Buffer_0_Fill">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External Ports" PORT="data_input_tl_0_Buffer_0_Fill_pin"/>
+            <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="buffer_0_fill"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="9" LSB="0" MHS_INDEX="11" MPD_INDEX="8" MSB="9" NAME="Port_A_Address" RIGHT="0" SIGNAME="data_input_tl_0_Port_A_Address" VECFORMULA="[9:0]">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="atod_datamem_addr"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="11" MPD_INDEX="9" MSB="15" NAME="AtoD_data_bus" RIGHT="0" SIGNAME="data_input_tl_0_AtoD_data_bus" VECFORMULA="[15:0]">
+        <PORT DIR="O" ENDIAN="LITTLE" IS_INSTANTIATED="TRUE" LEFT="15" LSB="0" MHS_INDEX="12" MPD_INDEX="9" MSB="15" NAME="AtoD_data_bus" RIGHT="0" SIGNAME="data_input_tl_0_AtoD_data_bus" VECFORMULA="[15:0]">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="atod_datamem_data"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="12" MPD_INDEX="7" NAME="mem_wr" SIGNAME="data_input_tl_0_mem_wr">
+        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="13" MPD_INDEX="7" NAME="mem_wr" SIGNAME="data_input_tl_0_mem_wr">
           <CONNECTIONS>
             <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="atod_datamem_we"/>
-          </CONNECTIONS>
-        </PORT>
-        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="13" MPD_INDEX="10" NAME="Buffer_0_Fill" SIGNAME="data_input_tl_0_Buffer_0_Fill">
-          <CONNECTIONS>
-            <CONNECTION INSTANCE="rtephyseng_plbw_0" PORT="buffer_0_fill"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="I" IS_INSTANTIATED="TRUE" MHS_INDEX="14" MPD_INDEX="6" NAME="HS32" SIGNAME="rtephyseng_plbw_0_hs32">
@@ -6877,7 +6886,7 @@
       </PORTS>
       <BUSINTERFACES/>
     </MODULE>
-    <MODULE HWVERSION="1.01.c" INSTANCE="rtephyseng_plbw_0" IPTYPE="PERIPHERAL" MHS_INDEX="13" MODCLASS="PERIPHERAL" MODTYPE="rtephyseng_plbw">
+    <MODULE HWVERSION="2.00.a" INSTANCE="rtephyseng_plbw_0" IPTYPE="PERIPHERAL" MHS_INDEX="13" MODCLASS="PERIPHERAL" MODTYPE="rtephyseng_plbw">
       <LICENSEINFO ICON_NAME="ps_core_local"/>
       <PARAMETERS>
         <PARAMETER ADDRESS="BASE" ADDR_TYPE="REGISTER" ASSIGNMENT="REQUIRE" CHANGEDBY="USER" ENDIAN="BIG" IS_INSTANTIATED="TRUE" LSB="31" MHS_INDEX="2" MPD_INDEX="0" MSB="0" NAME="C_BASEADDR" TYPE="std_logic_vector" VALUE="0xc3800000">
@@ -6911,12 +6920,12 @@
         </PARAMETER>
         <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="15" NAME="C_MEMMAP_E1_FILTER_OUT_REG_N_BITS" TYPE="integer" VALUE="16"/>
         <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="16" NAME="C_MEMMAP_E1_FILTER_OUT_REG_BIN_PT" TYPE="integer" VALUE="15"/>
-        <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="17" NAME="C_MEMMAP_ESP_CONTOL_REG" TYPE="integer" VALUE="0x4000">
-          <DESCRIPTION>C_MEMMAP_ESP_CONTOL_REG</DESCRIPTION>
-          <DESCRIPTION>C_MEMMAP_ESP_CONTOL_REG</DESCRIPTION>
+        <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="17" NAME="C_MEMMAP_ESP_CONTROL_REG" TYPE="integer" VALUE="0x4000">
+          <DESCRIPTION>C_MEMMAP_ESP_CONTROL_REG</DESCRIPTION>
+          <DESCRIPTION>C_MEMMAP_ESP_CONTROL_REG</DESCRIPTION>
         </PARAMETER>
-        <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="18" NAME="C_MEMMAP_ESP_CONTOL_REG_N_BITS" TYPE="integer" VALUE="16"/>
-        <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="19" NAME="C_MEMMAP_ESP_CONTOL_REG_BIN_PT" TYPE="integer" VALUE="0"/>
+        <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="18" NAME="C_MEMMAP_ESP_CONTROL_REG_N_BITS" TYPE="integer" VALUE="16"/>
+        <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="19" NAME="C_MEMMAP_ESP_CONTROL_REG_BIN_PT" TYPE="integer" VALUE="0"/>
         <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="20" NAME="C_MEMMAP_DTOA1_DATA_REGB" TYPE="integer" VALUE="0x4004">
           <DESCRIPTION>C_MEMMAP_DTOA1_DATA_REGB</DESCRIPTION>
           <DESCRIPTION>C_MEMMAP_DTOA1_DATA_REGB</DESCRIPTION>
@@ -6945,7 +6954,7 @@
           <DESCRIPTION>C_MEMMAP_E1_DECIMATION</DESCRIPTION>
           <DESCRIPTION>C_MEMMAP_E1_DECIMATION</DESCRIPTION>
         </PARAMETER>
-        <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="33" NAME="C_MEMMAP_E1_DECIMATION_N_BITS" TYPE="integer" VALUE="16"/>
+        <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="33" NAME="C_MEMMAP_E1_DECIMATION_N_BITS" TYPE="integer" VALUE="8"/>
         <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="34" NAME="C_MEMMAP_E1_DECIMATION_BIN_PT" TYPE="integer" VALUE="0"/>
         <PARAMETER ASSIGNMENT="CONSTANT" MPD_INDEX="35" NAME="C_MEMMAP_E1_FILTER_LENGTH" TYPE="integer" VALUE="0x4018">
           <DESCRIPTION>C_MEMMAP_E1_FILTER_LENGTH</DESCRIPTION>
@@ -7034,19 +7043,19 @@
             <CONNECTION INSTANCE="dtoa_converter_tl_0" PORT="dtoa_start"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="9" MPD_INDEX="17" NAME="eng_reset" SIGNAME="rtephyseng_plbw_0_eng_reset">
-          <CONNECTIONS>
-            <CONNECTION INSTANCE="External Ports" PORT="rtephyseng_plbw_0_eng_reset_pin"/>
-          </CONNECTIONS>
-        </PORT>
-        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="10" MPD_INDEX="18" NAME="hs32" SIGNAME="rtephyseng_plbw_0_hs32">
+        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="9" MPD_INDEX="18" NAME="hs32" SIGNAME="rtephyseng_plbw_0_hs32">
           <CONNECTIONS>
             <CONNECTION INSTANCE="data_input_tl_0" PORT="HS32"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="11" MPD_INDEX="19" NAME="new_sample_available" SIGNAME="rtephyseng_plbw_0_new_sample_available">
+        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="10" MPD_INDEX="19" NAME="new_sample_available" SIGNAME="rtephyseng_plbw_0_new_sample_available">
           <CONNECTIONS>
             <CONNECTION INSTANCE="External Ports" PORT="rtephyseng_plbw_0_new_sample_available_pin"/>
+          </CONNECTIONS>
+        </PORT>
+        <PORT DIR="O" IS_INSTANTIATED="TRUE" MHS_INDEX="11" MPD_INDEX="11" NAME="control16" SIGNAME="rtephyseng_plbw_0_control16">
+          <CONNECTIONS>
+            <CONNECTION INSTANCE="External Ports" PORT="rtephyseng_plbw_0_control16_pin"/>
           </CONNECTIONS>
         </PORT>
         <PORT BUS="SPLB" CLKFREQUENCY="90000000" DEF_SIGNAME="clk_66_6667MHz" DIR="I" MPD_INDEX="4" NAME="splb_clk" SIGIS="CLK" SIGNAME="clk_66_6667MHz">
@@ -7080,7 +7089,7 @@
             <CONNECTION INSTANCE="mb_plb" PORT="SPLB_Rst"/>
           </CONNECTIONS>
         </PORT>
-        <PORT DIR="O" MPD_INDEX="11" NAME="control16" SIGNAME="__NOC__"/>
+        <PORT DIR="O" MPD_INDEX="17" NAME="eng_reset" SIGNAME="__NOC__"/>
         <PORT BUS="SPLB" DEF_SIGNAME="mb_plb_sl_addrack" DIR="O" MPD_INDEX="20" NAME="sl_addrack" SIGNAME="mb_plb_sl_addrack">
           <CONNECTIONS>
             <CONNECTION INSTANCE="mb_plb" PORT="Sl_addrAck"/>

@@ -48,10 +48,10 @@ typedef struct {
     uint32_t E1_Filter_Out_Reg_n_bits;
     uint32_t E1_Filter_Out_Reg_bin_pt;
     // uint32_t E1_Filter_Out_Reg_attr;
-    uint32_t ESP_Contol_Reg;
-    uint32_t ESP_Contol_Reg_n_bits;
-    uint32_t ESP_Contol_Reg_bin_pt;
-    // uint32_t ESP_Contol_Reg_attr;
+    uint32_t ESP_Control_Reg;
+    uint32_t ESP_Control_Reg_n_bits;
+    uint32_t ESP_Control_Reg_bin_pt;
+    // uint32_t ESP_Control_Reg_attr;
     uint32_t dtoa1_data_regB;
     uint32_t dtoa1_data_regB_n_bits;
     uint32_t dtoa1_data_regB_bin_pt;
