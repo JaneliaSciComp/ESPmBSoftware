@@ -86,6 +86,8 @@ xc_from_reg_t *fromreg_dtoa1_data_regB;
 
 xc_shram_t	*AtoDInputShram;
 xc_shram_t	*E1_InputShram;
+xc_shram_t	*E1_FilterShram;
+xc_shram_t	*E1_TemplateShram;
 
 volatile u16 Buffer0Fill, newBuffer0Fill;
 
@@ -192,6 +194,9 @@ void init_ESP(void)
 	*EngRegPointers[0].pEngDecimationReg = 0;
 	*EngRegPointers[0].pEngFilterLengthReg = 1;    // these two instructions should set the filter length to 1
 	*EngRegPointers[0].pEngFilterMemory = 0x7FFF;	// and the filter coefficient to .9999 (pass thru)
+
+	*EngRegPointers[0].pEngTemplateSizeReg = 1;     //these two make template 1 long with 0 as a value
+	*EngRegPointers[0].pEngTemplateMemory = 0x0000;   // should get (filter_data - 0)^^2
 	currentHS = 1;
 	currentChannel = 0;
 }
@@ -223,6 +228,12 @@ void init_shared_memory(void)
 
 	funcStatus = xc_get_shmem(iface, "E1_Data_RAM", (void **) &E1_InputShram);
 	if (funcStatus != XC_SUCCESS) xil_printf("E1_Data_Mem get error %i\n", funcStatus);
+
+	funcStatus = xc_get_shmem(iface, "E1_filter_RAM", (void **) &E1_FilterShram);
+	if (funcStatus != XC_SUCCESS) xil_printf("E1_Filter_Mem get error %i\n", funcStatus);
+
+	funcStatus = xc_get_shmem(iface, "E1_Template_RAM", (void **) &E1_TemplateShram);
+	if (funcStatus != XC_SUCCESS) xil_printf("E1_Template_Mem get error %i\n", funcStatus);
 
 	//Set up pointers to the memory mapped data registers. Defines in xparameters.h//
 	// Control and Status Registers //
@@ -291,6 +302,7 @@ void processCommandString(void) {
 	unsigned char engineNum;
 	int i, j;
 	u32 value0, value1, value2;
+	u32 *ptr;
 
 	Inst[numberOfChar++] = '\n';				// add a 'new line c' character
 	//Inst[i++] = '\r';
@@ -369,7 +381,9 @@ void processCommandString(void) {
 		value1 = htoi(&Inst[6], 3);				// convert adddress
 		value2 = htoi(&Inst[10], 4);			// convert data
 		//*(EngRegPointers[engineNum].pEngFilterMemory + value1) = value2;
-		*(XC_GetAddr(EngRegPointers[engineNum].pEngFilterMemory, value1)) = value2;
+		//*(XC_GetAddr(EngRegPointers[engineNum].pEngFilterMemory, value1)) = value2;
+		// write value to the shared memory "shram1"
+		XC_Write(iface, XC_GetAddr(E1_FilterShram->addr, value1), (const unsigned) value2);
 		xil_printf("Eng:%d  add:%4x Fval:%4x\n", engineNum, EngRegPointers[engineNum].pEngFilterMemory + value1, value2 );
 		break;
 
@@ -379,9 +393,8 @@ void processCommandString(void) {
 		engineNum = Inst[4] - '0';				// convert the engine digit after the E:
 		value1 = htoi(&Inst[6], 3);				// convert adddress
 		value2 = htoi(&Inst[10], 4);			// convert data
-		//*(EngRegPointers[engineNum].pEngTemplateMemory + value1) = value2;
-		*(XC_GetAddr(EngRegPointers[engineNum].pEngFilterMemory, value1)) = value2;
-		xil_printf("Eng:%d  add:%4x Tval:%4x\n", engineNum, XC_GetAddr(EngRegPointers[engineNum].pEngFilterMemory, value1), value2 );
+		XC_Write(iface, XC_GetAddr(E1_TemplateShram->addr, value1), (const unsigned) value2);
+		xil_printf("Eng:%d  add:%4x Tval:%4x\n", engineNum, XC_GetAddr(EngRegPointers[engineNum].pEngTemplateMemory, value1), value2 );
 		break;
 
 	case 'l':									// set filter length register
@@ -389,7 +402,7 @@ void processCommandString(void) {
 		engineNum = Inst[4] - '0';				// convert the engine digit after the E:
 		value1 = ((Inst[6] - '0')*10 + (Inst[7] - '0'))*10 + (Inst[8] - '0');
 		*(EngRegPointers[engineNum].pEngFilterLengthReg) = value1;
-		xil_printf("length add:%d %x\n", value1, (EngRegPointers[engineNum].pEngFilterLengthReg) );
+		xil_printf("F length %d add:%x\n", value1, (EngRegPointers[engineNum].pEngFilterLengthReg) );
 		break;
 
 	case 's':									// set template size register
@@ -397,6 +410,8 @@ void processCommandString(void) {
 		engineNum = Inst[4] - '0';				// convert the engine digit after the E:
 		value1 = ((Inst[6] - '0')*10 + (Inst[7] - '0'))*10 + (Inst[8] - '0');
 		*(EngRegPointers[engineNum].pEngTemplateSizeReg) = value1;
+		xil_printf("T size:%d  add %x\n", value1, (EngRegPointers[engineNum].pEngTemplateSizeReg) );
+
 		break;
 
 	case 'r':									//reset the engines
@@ -405,6 +420,7 @@ void processCommandString(void) {
 		*ESP_Control_Reg = control;						// write the control register, the start bit must be high for >50nSec
 		control &= (u32)(~Eng_Reset_BIT);				//clear the start bits in the control register
 		*ESP_Control_Reg = control;
+		pEngine1_Data_Memory = (u32 *)(XPAR_RTEPHYSENG_PLBW_0_MEMMAP_E1_DATA_RAM); // start filling at 0
 		break;
 
 	case 'I':									//dump data memory
@@ -422,17 +438,22 @@ void processCommandString(void) {
 			xil_printf("%x %x %x\n", i, XC_GetAddr(AtoDInputShram->addr, i), value);
 		}
 		break;
-	case 'y': 	// debug										// dump filter memory
-		j=0;
-		for (i=0; i<128
-		; i++){
-			xil_printf("%3d %04x ", i, *(XC_GetAddr(EngRegPointers[0].pEngFilterMemory,  i)));
-			if(j == 7){
-				xil_printf("\n");
-				j=0;
+	case 'y': 	// debug										// dump filter or template memory memory
+																// format is ~y:Ex:<t,f> where x is engine #
+		engineNum = Inst[4] - '0';
+		xil_printf("engine:%d\n", engineNum);
+		if (Inst[6] == 'f')ptr = EngRegPointers[engineNum].pEngFilterMemory;
+		else	ptr = EngRegPointers[engineNum].pEngTemplateMemory;
+			j=0;
+			for (i=0; i<128; i++){
+				xil_printf("%3d %04x ", i, *ptr);
+				ptr++;
+				if(j == 7){
+					xil_printf("\n");
+					j=0;
+				}
+				else j++;
 			}
-			else j++;
-		}
 		break;
 	case 'Z':										// print 50 values from HS 1 (0-5) chan 2 (0-15 or 0-31)
 		showE1DataMemory();
@@ -445,7 +466,7 @@ void processCommandString(void) {
 }
 
 // minimalist hex to binary int converter -- no error checking of any sort
-// assumes A-F are capital letters
+// assumes a-f are capital letters
 
 u32 htoi(unsigned char *string, u32 numdigits)
 {
@@ -453,7 +474,7 @@ u32 htoi(unsigned char *string, u32 numdigits)
 	out = 0;
 	for (i=0; i<numdigits; i++, string++){
 		if(*string <= '9') out = (out << 4) + (*string - '0');
-		else out = (out << 4) + (*string - 55);					// 55 is ('A' - 10)
+		else out = (out << 4) + (*string - 87);					// 87 is ('a' - 10)
 	}
 	return (out);
 }
@@ -478,7 +499,7 @@ void processSample(void){
 	if (Buffer0Fill != 0)
 		{
 		// buffer 0 is filling get samples from buffer 1-- repeat for other engines
-		*pEngine1_Data_Memory = (*pEngine_data1[0]);             		// this actually moves the sample
+		*pEngine1_Data_Memory = (*pEngine_data1[0])<<1;             		// this actually moves the sample
 			if(++pEngine1_Data_Memory >= pEngine1_Data_Last){			// now check to see if the pointer is at the end of the buffer
 				pEngine1_Data_Memory = (u32 *)(XPAR_RTEPHYSENG_PLBW_0_MEMMAP_E1_DATA_RAM);  // if so set it back to the start
 			}
@@ -486,18 +507,18 @@ void processSample(void){
 		*DtoA0_Data_RegB = (*pDtoA_data1[1]);
 		*DtoA1_Data_RegA = (*pDtoA_data1[2]);
 		//xil_printf("E0 %x %d\n", pDtoA_data1[2], *pDtoA_data1[2] );
-		*DtoA1_Data_RegB = (*pDtoA_data1[3]);
+		*DtoA1_Data_RegB = (*pDtoA_data1[3])^0x8000;		//the ^0x8000 compliments highest order bit
 	} else
 		{
 		// buffer 1 is filling, get samples from buffer 0
-		*pEngine1_Data_Memory++ = (*pEngine_data0[0]);					// store the sample from the input buffer
+		*pEngine1_Data_Memory++ = (*pEngine_data0[0])<<1 ;					// store the sample from the input buffer
 			if(pEngine1_Data_Memory >= pEngine1_Data_Last){				// check for end of buffer
 				pEngine1_Data_Memory = (u32 *)(XPAR_RTEPHYSENG_PLBW_0_MEMMAP_E1_DATA_RAM);
 			}
 		*DtoA0_Data_RegA = (*pDtoA_data0[0]);
 		*DtoA0_Data_RegB = (*pDtoA_data0[1]);
 		*DtoA1_Data_RegA = (*pDtoA_data0[2]);
-		*DtoA1_Data_RegB = (*pDtoA_data0[3]);
+		*DtoA1_Data_RegB = (*pDtoA_data0[3])^0x8000;
 	}
 	control |=  (u32)(DtoAstart0_BIT | DtoAstart1_BIT | New_Sample_Available_BIT);	// set the start bits in the control register
 	*ESP_Control_Reg = control;						// write the control register, the start bit must be high for >50nSec
@@ -524,30 +545,58 @@ void usec_wait(Xint32 delay)
 
 // showE1DataMemory debug routine to play the E1 data memory out to D/A 0
 
+//void showE1DataMemory(void){
+//		u32 *pE1;
+//		int  i, j, l;
+//
+//		control &= (u32)(Eng_Reset_BIT);				// stop processing samples
+//		*ESP_Control_Reg = control;
+//		for (i=1;i<100;i++){
+//			j=0;
+//					pE1=(u32 *)XPAR_RTEPHYSENG_PLBW_0_MEMMAP_E1_DATA_RAM;
+//					while (j<256){
+//						asm("nop");
+//						*DtoA0_Data_RegA = *pE1;
+//						asm("nop");
+//			//			xil_printf("%d %x %x\n", j, pE1, *pE1);
+//						control |=  (u32)DtoAstart0_BIT;				// set the start bits in the control register
+//						*ESP_Control_Reg = control;						// write the control register, the start bit must be high for >50nSec
+//						pE1++;
+//						control &= (u32)(~DtoAstart0_BIT);				//clear the start bits in the control register
+//						*ESP_Control_Reg = control;
+//						j++;
+//						for(l=0;l<400;l++);
+//					}
+//		}
+//		control |= (u32)(~Eng_Reset_BIT);				// start processing samples again
+//
+//
+//
+//	xil_printf("Done E1 display\n");
+//	return;
+//}
 void showE1DataMemory(void){
 		u32 *pE1;
-		int  i, j, l;
+		int  i, j;
 
-		control &= (u32)(Eng_Reset_BIT);				// stop processing samples
+		control |= (u32)(Eng_Reset_BIT);				// stop processing samples
 		*ESP_Control_Reg = control;
-		for (i=1;i<100;i++){
+//		engineNum = Inst[4] - '0';
+//		xil_printf("engine:%d\n", engineNum);
+//		if (Inst[6] == 'f')ptr = EngRegPointers[engineNum].pEngFilterMemory;
+//		else	ptr = EngRegPointers[engineNum].pEngTemplateMemory;
+		pE1=(u32 *)XPAR_RTEPHYSENG_PLBW_0_MEMMAP_E1_DATA_RAM;
 			j=0;
-					pE1=(u32 *)XPAR_RTEPHYSENG_PLBW_0_MEMMAP_E1_DATA_RAM;
-					while (j<256){
-						asm("nop");
-						*DtoA0_Data_RegA = *pE1;
-						asm("nop");
-			//			xil_printf("%d %x %x\n", j, pE1, *pE1);
-						control |=  (u32)DtoAstart0_BIT;				// set the start bits in the control register
-						*ESP_Control_Reg = control;						// write the control register, the start bit must be high for >50nSec
-						pE1++;
-						control &= (u32)(~DtoAstart0_BIT);				//clear the start bits in the control register
-						*ESP_Control_Reg = control;
-						j++;
-						for(l=0;l<400;l++);
-					}
-		}
-		control |= (u32)(~Eng_Reset_BIT);				// start processing samples again
+			for (i=0; i<128; i++){
+				xil_printf("%3d %04x ", i, *pE1);
+				pE1++;
+				if(j == 7){
+					xil_printf("\n");
+					j=0;
+				}
+				else j++;
+			}
+		control &= (u32)(~Eng_Reset_BIT);				// start processing samples again
 
 
 
